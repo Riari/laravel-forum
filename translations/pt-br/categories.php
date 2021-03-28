@@ -4,6 +4,7 @@ return [
 
     'actions' => "Ações de categoria",
     'category' => "Categoria|Categorias",
+    'confirm_nonempty_delete' => "Yes, I want to permanently delete this category and everything inside it",
     'create' => "Criar categoria",
     'created' => "Categoria criada",
     'deleted' => "Categoria deletada|Categorias deletadas",

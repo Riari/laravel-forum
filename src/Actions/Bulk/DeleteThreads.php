@@ -42,9 +42,18 @@ class DeleteThreads extends BaseAction
 
         // Use the raw query builder to prevent touching updated_at
         $query = DB::table(Thread::getTableName())->whereIn('id', $this->threadIds);
-        $rowsAffected = $this->permaDelete
-            ? $query->delete()
-            : $query->whereNull(Thread::DELETED_AT)->update([Thread::DELETED_AT => DB::raw('now()')]);
+
+        if ($this->permaDelete)
+        {
+            $rowsAffected = $query->delete();
+            
+            // Drop readers for the removed threads
+            DB::table(Thread::READERS_TABLE)->whereIn('thread_id', $threadIdsToDelete)->delete();
+        }
+        else
+        {
+            $rowsAffected = $query->whereNull(Thread::DELETED_AT)->update([Thread::DELETED_AT => DB::raw('now()')]);
+        }
 
         $threadsByCategory = $threads->groupBy('category_id');
         foreach ($threadsByCategory as $categoryThreads)

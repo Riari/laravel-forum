@@ -31,10 +31,10 @@ class CreateCategory extends FormRequest implements FulfillableRequest
 
         $action = new Action(
             $input['title'],
-            $input['description'],
+            isset($input['description']) ? $input['description'] : "",
             $input['color'],
-            $input['accepts_threads'],
-            $input['is_private']
+            isset($input['accepts_threads']) && $input['accepts_threads'],
+            isset($input['is_private']) && $input['is_private']
         );
 
         $category = $action->execute();

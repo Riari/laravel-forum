@@ -4,6 +4,7 @@ return [
 
     'actions' => "Category actions",
     'category' => "Kategorija|Kategorije",
+    'confirm_nonempty_delete' => "Yes, I want to permanently delete this category and everything inside it",
     'create' => "Napravi kategoriju",
     'created' => "Kategorija napravljena",
     'deleted' => "Kategorija izbrisana|Kategorije izbrisane",

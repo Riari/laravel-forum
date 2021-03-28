@@ -4,6 +4,7 @@ return [
 
     'actions' => 'จัดการหมวดหมู่',
     'category' => 'หมวดหมู่|หมวดหมู่',
+    'confirm_nonempty_delete' => "Yes, I want to permanently delete this category and everything inside it",
     'create' => 'เพิ่มหมวดหมู่',
     'created' => 'เพิ่มหมวดหมู่แล้ว',
     'deleted' => 'ลบหมวดหมู่แล้ว|ลบหมวดหมู่แล้ว',

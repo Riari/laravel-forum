@@ -4,6 +4,7 @@ return [
 
     'actions' => "Kategori ayarları",
     'category' => "Kategori|Kategoriler",
+    'confirm_nonempty_delete' => "Yes, I want to permanently delete this category and everything inside it",
     'create' => "Kategori Oluştur",
     'created' => "Kategori oluşturuldu",
     'deleted' => "Kategori silindi|Kategoriler Silindi",

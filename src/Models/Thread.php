@@ -23,6 +23,8 @@ class Thread extends BaseModel
     protected $dates = ['deleted_at'];
     protected $fillable = ['category_id', 'author_id', 'title', 'locked', 'pinned', 'reply_count', 'first_post_id', 'last_post_id', 'updated_at'];
 
+    const READERS_TABLE = 'forum_threads_read';
+
     const STATUS_UNREAD = 'unread';
     const STATUS_UPDATED = 'updated';
 
@@ -41,7 +43,7 @@ class Thread extends BaseModel
     {
         return $this->belongsToMany(
             config('forum.integration.user_model'),
-            'forum_threads_read',
+            self::READERS_TABLE,
             'thread_id',
             'user_id'
         )->withTimestamps();

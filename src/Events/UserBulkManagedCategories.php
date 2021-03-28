@@ -7,11 +7,13 @@ class UserBulkManagedCategories
     /** @var mixed */
     public $user;
 
-    public array $categories;
+    public int $categoriesAffected;
+    public array $categoryData;
 
-    public function __construct($user, array $categories)
+    public function __construct($user, int $categoriesAffected, array $categoryData)
     {
         $this->user = $user;
-        $this->categories = $categories;
+        $this->categoriesAffected = $categoriesAffected;
+        $this->categoryData = $categoryData;
     }
 }

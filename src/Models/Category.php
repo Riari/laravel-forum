@@ -81,4 +81,9 @@ class Category extends BaseModel
         $thread = $this->threads()->orderBy('updated_at', 'desc')->first();
         return $thread ? $thread->id : null;
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->descendants->count() == 0 && $this->threads()->withTrashed()->count() == 0;
+    }
 }

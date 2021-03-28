@@ -6,14 +6,29 @@ use Illuminate\Foundation\Http\FormRequest;
 use TeamTeaTime\Forum\Actions\DeleteCategory as Action;
 use TeamTeaTime\Forum\Events\UserDeletedCategory;
 use TeamTeaTime\Forum\Interfaces\FulfillableRequest;
+use TeamTeaTime\Forum\Http\Requests\Traits\AuthorizesAfterValidation;
 use TeamTeaTime\Forum\Http\Requests\Traits\HandlesDeletion;
 use TeamTeaTime\Forum\Models\Category;
 
 class DeleteCategory extends FormRequest implements FulfillableRequest
 {
-    use HandlesDeletion;
+    use AuthorizesAfterValidation, HandlesDeletion;
 
-    public function authorize(): bool
+    public function rules(): array
+    {
+        return [
+            'force' => ['boolean']
+        ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->sometimes('force', 'required', function ($input) {
+            return ! $this->route('category')->isEmpty();
+        });
+    }
+
+    public function authorizeValidated(): bool
     {
         return $this->user()->can('delete', $this->route('category'));
     }

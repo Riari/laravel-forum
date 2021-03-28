@@ -24,11 +24,12 @@ class ManageCategories extends FormRequest implements FulfillableRequest
 
     public function fulfill()
     {
-        $action = new Action($this->validated()['categories']);
-        $categories = $action->execute();
+        $categoryData = $this->validated()['categories'];
+        $action = new Action($categoryData);
+        $categoriesAffected = $action->execute();
 
-        event(new UserBulkManagedCategories($this->user(), $categories));
+        event(new UserBulkManagedCategories($this->user(), $categoriesAffected, $categoryData));
 
-        return $categories;
+        return $categoriesAffected;
     }
 }
