@@ -26,21 +26,6 @@ abstract class BaseController extends Controller
     protected $rules;
 
     /**
-     * Create a new API controller instance.
-     *
-     * @param  Request  $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->validate($request, [
-            'with' => 'array',
-            'append' => 'array',
-            'orderBy' => 'string',
-            'orderDir' => 'in:desc,asc'
-        ]);
-    }
-
-    /**
      * Return the model to use for this controller.
      *
      * @return \Illuminate\Database\Eloquent\Model
@@ -238,26 +223,6 @@ abstract class BaseController extends Controller
             list($ability, $authorizeModel) = $authorize;
 
             $this->authorize($ability, $authorizeModel);
-        }
-    }
-
-    /**
-     * Validate the given request with the given rules.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array  $rules
-     * @param  array  $messages
-     * @param  array  $customAttributes
-     * @return void
-     *
-     * @throws \Illuminate\Http\Exception\HttpResponseException
-     */
-    public function validate(Request $request, array $rules = [], array $messages = [], array $customAttributes = [])
-    {
-        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
         }
     }
 
