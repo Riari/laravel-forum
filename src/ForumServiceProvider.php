@@ -1,4 +1,6 @@
-<?php namespace TeamTeaTime\Forum;
+<?php
+
+namespace TeamTeaTime\Forum;
 
 use Carbon\Carbon;
 use Illuminate\Auth\Access\Gate;
