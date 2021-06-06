@@ -80,17 +80,13 @@ class ThreadController extends BaseController
 
     public function show(Request $request, Thread $thread): View
     {
-        $category = $thread->category;
-
-        if (! $category->isAccessibleTo($request->user()))
-        {
-            abort(404);
-        }
+        $this->authorize('view', $thread);
 
         event(new UserViewingThread($request->user(), $thread));
 
         $thread->markAsRead($request->user()->getKey());
 
+        $category = $thread->category;
         $categories = $request->user() && $request->user()->can('moveThreadsFrom', $category)
                     ? Category::acceptsThreads()->get()->toTree()
                     : [];

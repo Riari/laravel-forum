@@ -65,7 +65,7 @@ $r->group(['prefix' => 'bulk', 'as' => 'bulk.', 'namespace' => 'Bulk'], function
 
 $r->bind('thread', function ($value)
 {
-    $thread = \TeamTeaTime\Forum\Models\Thread::withTrashed()->find($value);
+    $thread = \TeamTeaTime\Forum\Models\Thread::withTrashed()->with('category')->find($value);
 
     if ($thread->trashed() && ! Gate::allows('viewTrashedThreads')) return null;
 
@@ -74,7 +74,7 @@ $r->bind('thread', function ($value)
 
 $r->bind('post', function ($value)
 {
-    $post = \TeamTeaTime\Forum\Models\Post::withTrashed()->find($value);
+    $post = \TeamTeaTime\Forum\Models\Post::withTrashed()->with(['thread', 'thread.category'])->find($value);
 
     if ($post->trashed() && ! Gate::allows('viewTrashedPosts')) return null;
 

@@ -33,11 +33,6 @@ class CategoryController extends BaseController
 
     public function show(Request $request, Category $category): View
     {
-        if (! $category->isAccessibleTo($request->user()))
-        {
-            abort(404);
-        }
-
         event(new UserViewingCategory($request->user(), $category));
 
         $categories = $request->user() && $request->user()->can('moveCategories') ? Category::defaultOrder()->withDepth()->get() : [];

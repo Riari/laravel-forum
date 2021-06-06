@@ -22,10 +22,22 @@ class LockThreads extends FormRequest implements FulfillableRequest
 
     public function authorizeValidated(): bool
     {
-        $categories = $this->categories();
+        $query = Thread::whereIn('id', $this->validated()['threads']);
+
+        if ($this->user()->can('viewTrashedThreads'))
+        {
+            $query = $query->withTrashed();
+        }
+
+        $categoryIds = $query->select('category_id')->distinct()->pluck('category_id');
+        $categories = Category::whereIn('id', $categoryIds)->get();
+
         foreach ($categories as $category)
         {
-            if (! $this->user()->can('lockThreads', $category)) return false;
+            if (! $this->user()->can('view', $category) && ! $this->user()->can('lockThreads', $category))
+            {
+                return false;
+            }
         }
 
         return true;
@@ -42,19 +54,5 @@ class LockThreads extends FormRequest implements FulfillableRequest
         }
 
         return $threads;
-    }
-
-    protected function categories(): Collection
-    {
-        $query = Thread::whereIn('id', $this->validated()['threads']);
-
-        if ($this->user()->can('viewTrashedThreads'))
-        {
-            $query = $query->withTrashed();
-        }
-
-        $categoryIds = $query->select('category_id')->distinct()->pluck('category_id');
-
-        return Category::whereIn('id', $categoryIds)->get();
     }
 }

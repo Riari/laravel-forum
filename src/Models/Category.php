@@ -87,9 +87,4 @@ class Category extends BaseModel
     {
         return $this->descendants->count() == 0 && $this->threads()->withTrashed()->count() == 0;
     }
-
-    public function isAccessibleTo(User $user = null): bool
-    {
-        return ! $this->is_private || (! is_null($user) && $user->can('view', $this));
-    }
 }

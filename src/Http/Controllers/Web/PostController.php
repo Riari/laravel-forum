@@ -21,12 +21,7 @@ class PostController extends BaseController
 {
     public function show(Request $request, Thread $thread, string $postSlug, Post $post): View
     {
-        $category = $thread->category;
-        
-        if (! $category->isAccessibleTo($request->user()))
-        {
-            abort(404);
-        }
+        $this->authorize('view', $post);
 
         event(new UserViewingPost($request->user(), $post));
 

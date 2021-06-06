@@ -16,11 +16,11 @@ $r->post($prefix['category'] . '/create', ['as' => 'category.store', 'uses' => '
 $r->group(['prefix' => $prefix['category'] . '/{category}-{category_slug}'], function ($r) use ($prefix, $authMiddleware)
 {
     $r->get('/', ['as' => 'category.show', 'uses' => 'CategoryController@show']);
-    $r->patch('/', ['as' => 'category.update', 'uses' => 'CategoryController@update', 'middleware' => $authMiddleware]);
-    $r->delete('/', ['as' => 'category.delete', 'uses' => 'CategoryController@destroy', 'middleware' => $authMiddleware]);
+    $r->patch('/', ['as' => 'category.update', 'uses' => 'CategoryController@update'])->middleware($authMiddleware);
+    $r->delete('/', ['as' => 'category.delete', 'uses' => 'CategoryController@destroy'])->middleware($authMiddleware);
 
     $r->get($prefix['thread'] . '/create', ['as' => 'thread.create', 'uses' => 'ThreadController@create']);
-    $r->post($prefix['thread'] . '/create', ['as' => 'thread.store', 'uses' => 'ThreadController@store', 'middleware' => $authMiddleware]);
+    $r->post($prefix['thread'] . '/create', ['as' => 'thread.store', 'uses' => 'ThreadController@store'])->middleware($authMiddleware);
 });
 
 $r->group(['prefix' => $prefix['thread'] . '/{thread}-{thread_slug}'], function ($r) use ($prefix, $authMiddleware)
@@ -72,7 +72,7 @@ $r->bind('category', function ($value)
 
 $r->bind('thread', function ($value)
 {
-    $thread = \TeamTeaTime\Forum\Models\Thread::withTrashed()->find($value);
+    $thread = \TeamTeaTime\Forum\Models\Thread::withTrashed()->with('category')->find($value);
 
     if (is_null($thread)) abort(404);
 
@@ -83,7 +83,7 @@ $r->bind('thread', function ($value)
 
 $r->bind('post', function ($value)
 {
-    $post = \TeamTeaTime\Forum\Models\Post::withTrashed()->find($value);
+    $post = \TeamTeaTime\Forum\Models\Post::withTrashed()->with(['thread', 'thread.category'])->find($value);
 
     if (is_null($post)) abort(404);
 

@@ -31,11 +31,19 @@ class MoveThreads extends FormRequest implements FulfillableRequest
 
     public function authorizeValidated(): bool
     {
-        if (! $this->user()->can('moveThreadsTo', $this->getDestinationCategory())) return false;
+        $destinationCategory = $this->getDestinationCategory();
+
+        if (! ($this->user()->can('view', $destinationCategory) || $this->user()->can('moveThreadsTo', $destinationCategory)))
+        {
+            return false;
+        }
 
         foreach ($this->getSourceCategories() as $category)
         {
-            if (! $this->user()->can('moveThreadsFrom', $category)) return false;
+            if (! ($this->user()->can('view', $category) || $this->user()->can('moveThreadsFrom', $category)))
+            {
+                return false;
+            }
         }
 
         return true;

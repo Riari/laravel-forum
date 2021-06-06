@@ -27,11 +27,21 @@ class DeletePosts extends FormRequest implements FulfillableRequest
 
     public function authorizeValidated(): bool
     {
-        $posts = $this->postsAsModels()->get();
+        $query = Post::query();
+
+        if ($this->user()->can('viewTrashedPosts'))
+        {
+            $query = $query->withTrashed();
+        }
+
+        $posts = $query->with(['thread', 'thread.category'])->whereIn('id', $this->validated()['posts']);
 
         foreach ($posts as $post)
         {
-            if (! $this->user()->can('delete', $post)) return false;
+            if (! ($this->user()->can('view', $post->thread->category) || $this->user()->can('delete', $post)))
+            {
+                return false;
+            }
         }
 
         return true;
@@ -52,29 +62,5 @@ class DeletePosts extends FormRequest implements FulfillableRequest
         }
 
         return $posts;
-    }
-
-    private function posts(): QueryBuilder
-    {
-        $query = DB::table(Post::getTableName());
-
-        if (! $this->user()->can('viewTrashedPosts'))
-        {
-            $query = $query->whereNull('deleted_at');
-        }
-
-        return $query->whereIn('id', $this->validated()['posts']);
-    }
-
-    private function postsAsModels(): EloquentBuilder
-    {
-        $query = Post::query();
-
-        if ($this->user()->can('viewTrashedPosts'))
-        {
-            $query = $query->withTrashed();
-        }
-
-        return $query->whereIn('id', $this->validated()['posts']);
     }
 }
